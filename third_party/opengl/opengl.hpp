@@ -383,7 +383,6 @@ namespace OpenGL {
 			if (success == GL_FALSE) {
 				char buf[4096];
 				glGetShaderInfoLog(m_handle, 4096, nullptr, buf);
-				fprintf(stderr, "Failed to compile shader\nError: %s\n", buf);
 				glDeleteShader(m_handle);
 
 				m_handle = 0;
