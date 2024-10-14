@@ -115,6 +115,7 @@ std::string FragmentGenerator::generate(const FragmentConfig& config, void* driv
 
 	// For GLES we need to enable & use the framebuffer fetch extension in order to emulate logic ops
 	bool emitLogicOps = api == API::GLES && config.outConfig.logicOpMode != PICA::LogicOpMode::Copy && driverInfo != nullptr;
+	bool usingExtFbFetch = false;
 
 	if (emitLogicOps) {
 		auto driver = static_cast<OpenGL::Driver*>(driverInfo);
@@ -127,6 +128,7 @@ std::string FragmentGenerator::generate(const FragmentConfig& config, void* driv
 		// Figure out which fb fetch extension we have and enable it
 		else {
 			if (driver->supportsExtFbFetch) {
+				usingExtFbFetch = true;
 				ret += "\n#extension GL_EXT_shader_framebuffer_fetch : enable\n#define fb_color fragColor\n";
 			} else if (driver->supportsArmFbFetch) {
 				ret += "\n#extension GL_ARM_shader_framebuffer_fetch : enable\n#define fb_color gl_LastFragColorARM[0]\n";
@@ -145,7 +147,14 @@ std::string FragmentGenerator::generate(const FragmentConfig& config, void* driv
 		)";
 	}
 
-	// Input and output attributes
+	// Declare input and output attributes
+	// If we're using the GL_EXT_shader_framebuffer_fetch extension then we must declare our output colour as an inout variable rather than just out
+	if (usingExtFbFetch) {
+		ret += "layout (location = 0) inout vec4 fragColor;";
+	} else {
+		ret += "layout (location = 0) out vec4 fragColor;";
+	}
+	
 	ret += R"(
 		in vec4 v_quaternion;
 		in vec4 v_colour;
@@ -154,7 +163,6 @@ std::string FragmentGenerator::generate(const FragmentConfig& config, void* driv
 		in vec3 v_view;
 		in vec2 v_texcoord2;
 
-		out vec4 fragColor;
 		uniform sampler2D u_tex0;
 		uniform sampler2D u_tex1;
 		uniform sampler2D u_tex2;
