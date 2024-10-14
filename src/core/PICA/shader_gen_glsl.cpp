@@ -148,12 +148,7 @@ std::string FragmentGenerator::generate(const FragmentConfig& config, void* driv
 	}
 
 	// Declare input and output attributes
-	// If we're using the GL_EXT_shader_framebuffer_fetch extension then we must declare our output colour as an inout variable rather than just out
-	if (usingExtFbFetch) {
-		ret += "layout (location = 0) inout vec4 fragColor;";
-	} else {
-		ret += "layout (location = 0) out vec4 fragColor;";
-	}
+	ret += "layout (location = 0) out vec4 fragColor;";
 	
 	ret += R"(
 		in vec4 v_quaternion;
