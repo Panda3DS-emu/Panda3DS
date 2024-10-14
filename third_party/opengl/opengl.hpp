@@ -30,6 +30,10 @@
 #include <type_traits>
 #include <utility>
 
+#ifdef __ANDROID__
+#include <android/log.h>
+#endif
+
 #include <glad/gl.h>
 
 // Check if we have C++20. If yes, we can add C++20 std::span support
@@ -383,6 +387,9 @@ namespace OpenGL {
 			if (success == GL_FALSE) {
 				char buf[4096];
 				glGetShaderInfoLog(m_handle, 4096, nullptr, buf);
+				#ifdef __ANDROID__
+					__android_log_print(ANDROID_LOG_INFO, "AlberDriver", "Failed to compile shader\nError: %s\nShader: %s", buf, sources[0]);
+				#endif
 				glDeleteShader(m_handle);
 
 				m_handle = 0;
