@@ -25,6 +25,7 @@ class MiniAudioDevice {
 	MiniAudioDevice();
 	// If safe is on, we create a null audio device
 	void init(Samples& samples, bool safe = false);
+	void close();
 
 	void start();
 	void stop();

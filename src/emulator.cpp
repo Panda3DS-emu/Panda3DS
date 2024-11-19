@@ -50,7 +50,7 @@ Emulator::Emulator()
 Emulator::~Emulator() {
 	config.save();
 	lua.close();
-	audioDevice.stop();
+	audioDevice.close();
 
 #ifdef PANDA3DS_ENABLE_DISCORD_RPC
 	discordRpc.stop();
