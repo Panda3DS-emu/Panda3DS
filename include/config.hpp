@@ -39,7 +39,7 @@ struct EmulatorConfig {
 	bool sdWriteProtected = false;
 	bool usePortableBuild = false;
 
-	bool audioEnabled = false;
+	bool audioEnabled = true;
 	bool vsyncEnabled = true;
 
 	bool enableRenderdoc = false;
